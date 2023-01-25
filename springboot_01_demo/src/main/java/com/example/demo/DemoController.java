@@ -20,7 +20,7 @@ public class DemoController {
 	
 	//src\main\webapp\WEB-INF\views 폴더 생성
 	
-	
+	// jsp로 응답하기때문에 @Responsebody는 사용하지않는다
 	@RequestMapping("/hello.do")
 	public String hello(Model model) {
 		System.out.println("model");

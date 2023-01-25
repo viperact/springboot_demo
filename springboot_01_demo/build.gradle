@@ -23,6 +23,10 @@ dependencies {
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'	
 	//jstl
 	implementation 'javax.servlet:jstl:1.2'
+	//lombok
+	compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	
 }
 
 tasks.named('test') {
