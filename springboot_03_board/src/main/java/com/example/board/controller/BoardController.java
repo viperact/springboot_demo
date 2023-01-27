@@ -8,8 +8,10 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,13 +21,18 @@ import com.example.board.dto.BoardDTO;
 import com.example.board.dto.PageDTO;
 import com.example.board.service.BoardService;
 
-//http://localhost:8090/myapp/list.sb
+//http://localhost:8090/list.sb
+
 
 @Controller
 public class BoardController {
 
+	@Autowired
 	private BoardService service;
+	
+	@Autowired
 	private PageDTO pdto;
+	
 	private int currentPage;
 
 	public BoardController() {

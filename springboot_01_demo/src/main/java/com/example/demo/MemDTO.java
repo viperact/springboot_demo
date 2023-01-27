@@ -8,8 +8,8 @@ import lombok.Setter;
 @NoArgsConstructor // 파라미터가 없는 생성자
 @AllArgsConstructor
 
-@Setter
 @Getter
+@Setter
 public class MemDTO {
 	private String name;
 	private int age;

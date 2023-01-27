@@ -1,16 +1,12 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.3'
+	id 'org.springframework.boot' version '2.7.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
 }
-
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
-
-
-
 
 configurations {
 	compileOnly {
@@ -18,17 +14,9 @@ configurations {
 	}
 }
 
-
-
-
 repositories {
-   // 원격 저장소 사용
 	mavenCentral()
-	
-	//로컬 저장소 사용
-	//mavenLocal()
 }
-
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -48,7 +36,7 @@ dependencies {
 	//jstl
 	implementation 'javax.servlet:jstl:1.2'	
 	
-	//mysql
+	//mybatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
 	
 	//oracle : 11 version
@@ -61,32 +49,8 @@ dependencies {
 	implementation 'org.apache.tiles:tiles-core:3.0.8'
 	implementation 'org.apache.tiles:tiles-api:3.0.8'
 	implementation 'org.apache.tiles:tiles-el:3.0.8'
-	
 }
-
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
