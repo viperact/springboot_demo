@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,8 @@ import com.example.demo.backend_todolist.service.TodoService;
 
 //@RestController = @Controller + @ResponseBody
 
+@CrossOrigin("*") // 다른포트번호의 요청도 허가해주는 어노테이션 (모든요청허가)
+//@CrossOrigin(origins = {"http://localhost:3000"}) // 포트번호 3000만 허가해준다, 자바는 배열을 {}로 처리
 @RestController // 현재 class에서 데이터를 보내기만할때 사용
 //@Controller
 public class TodoController {
