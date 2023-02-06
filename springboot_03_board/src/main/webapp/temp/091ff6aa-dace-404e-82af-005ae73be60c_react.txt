@@ -1,0 +1,85 @@
+================ REACT ================
+
+https://nodejs.org/en/
+
+LTS 다운로드
+
+파일 utill에 옮긴후 실행
+
+node.js command prompt 관리자 권한 실행
+
+node -v : 버전확인 (18.13.0)
+
+npm설치
+npm install -g create-react-app (global 설치) - 이걸로 설치
+npm install create-react-app (local 설치) 
+
+C:\Users\EZEN\AppData\Roaming\npm\node_modules\create-react-app (global 설치경로)
+
+react의 기본 포트번호 : 3000
+
+npx 명령어
+npx 프로젝트 생성
+
+cd C:\big_study\react_workspace
+
+npx create-react-app myproject
+
+cd myproject
+
+npm start
+
+종료할땐 ctrl c - y
+
+================ 2023 / 01 / 30 ================
+
+vs code
+
+react_workspace\
+
+터미널 - npx create-react-app myapp001_basic
+
+JSX에 대한 의미 - 
+
+Babel - JSX표현을 변환하는데 사용
+
+요소 속성에서 class 대신 className 사용
+
+JSX에서 자바스크립트 표현은 { }을 사용한다.
+JSX에선 리턴값은 반드시 요소로 감싸줘야 한다.
+인라인 스타일 정의시 중괄호 두개사용 {{ }}
+if 대신에 조건부 연산자를 사용한다.
+AND 연산자(&&)를 사용한 조건부 렌더링
+
+const number = 0;
+  return number && <div>내용</div>
+
+vs code market에서 Reactjs code snippets 다운로드 v 2.4.0
+
+react에서 이벤트들은 카멜표기법으로 작성한다
+
+onclick (X)
+
+onClick (O)
+
+============== 2023 / 02/ 01  ==================
+
+// context는 상태관리를 하진않는다.
+// 단순히 부모 컨포넌트에 생성된 자원을 다시 컨포넌트에서 직접적으로 사용할 수 있도록 연결하는 역할을한다.
+// 상태관리는 useState, Redux가 지원한다.
+
+============= 2023 / 02 / 02 ==========
+라이브러리 설치
+npm install axios
+
+npm install bootstrap
+
+npm install react-router-dom
+
+npm install redux react-redux
+(npm install react-router-dom@5.5.0 (버전지정하여 설치하는법))
+
+const style = { color: 'green', fontsize: '20px' };
+
+react 소스 참고사이트
+https://mui.com/
