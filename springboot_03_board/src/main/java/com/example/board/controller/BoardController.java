@@ -3,6 +3,10 @@ package com.example.board.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +14,21 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,7 +57,7 @@ public class BoardController {
 	
 	private int currentPage;
 	
-	@Value("$(spring.servlet.multipart.location)")
+	@Value("${spring.servlet.multipart.location}")
 	private String filePath;
 
 	public BoardController() {
@@ -112,9 +122,9 @@ public class BoardController {
 		MultipartFile file = dto.getFilename();
 		if (file != null && !file.isEmpty()) { // 첨부파일이 비어있지 않으면
 			UUID random = saveCopyFile(file, request);
-			dto.setUpload(random + "_" + file.getOriginalFilename());
+			dto.setUpload(random + "_" + file.getOriginalFilename()); //react, 난수값 저장
 			// c:\\download\\temp 경로에 첨부파일 저장
-			file.transferTo(new File(file.getOriginalFilename()));
+			file.transferTo(new File(random + "_" + file.getOriginalFilename()));
 
 		}
 
@@ -125,10 +135,12 @@ public class BoardController {
 		// 답변글이면
 		if (dto.getRef() != 0) {
 //			return "redirect:/list.sb?currentPage=" + pv.getCurrentPage();
-			return "redirect:/board/list/" + pv.getCurrentPage(); // react
+//			return "redirect:/board/list/" + pv.getCurrentPage(); // react
+			return String.valueOf(pv.getCurrentPage());
 		} else {
 //			return "redirect:/list.sb";
-			return "redirect:/board/list/1"; // react
+//			return "redirect:/board/list/1"; // react
+			return  String.valueOf(1);
 		}
 	}// end writeProMethod()
 	
@@ -220,12 +232,32 @@ public class BoardController {
 		return service.contentProcess(num);
 	}// end viewMethod()
 
+	
 //	@RequestMapping("/contentdownload.sb")
-	@RequestMapping("/board/contentdownload") // react
-	public ModelAndView downMethod(int num, ModelAndView mav) {
-		mav.addObject("num", num);
-		mav.setViewName("download");
-		return mav;
-	}// end downMethod()
+	@RequestMapping("/board/contentdownload/{filename}") // react
+//	public ModelAndView downMethod(int num, ModelAndView mav) {
+	public ResponseEntity<Resource> downMethod(@PathVariable("filename") String filename) throws IOException {
+//		mav.addObject("num", num);
+//		mav.setViewName("download");
+		String fileName = filename.substring(filename.indexOf("_") + 1); //react, 파일이름을 가져오는 작업
+		
+		
+		//파일명이 한글일때 인코딩 작업을 한다.
+		String str = URLEncoder.encode(fileName, "UTF-8"); 
+		
+		//원본파일명에서 공백이 있을 때, +로 표시가 되므로 공백으로 처리해줌
+		str = str.replaceAll("\\+","%20");
+		Path path = Paths.get(filePath+"\\"+filename);
+		Resource resource = new InputStreamResource(Files.newInputStream(path));
+		
+		System.out.println("resource:" + resource.getFilename());
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename="+str+";")
+				.body(resource);
+}// end downMethod()
 
-}// end class
+
+};// end class
+
