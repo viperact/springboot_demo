@@ -1,0 +1,52 @@
+1. 프로젝트 주제선정
+	영상, 음원, 쇼핑, 패션및 뷰티
+(넷플릭스, 멜론, 쿠팡 등등.. )
+
+2. 작업일지 작성 (그날 어떤회의를 했는가, 각자 어떤 부분을 맡는가, 작업진행도는 어느정도인가)
+
+	* 소스 구현 전, ERD 작성 ( 중요 ) *
+sql developer - 보기 - data model - 브라우저 - 아래에 브라우저 생성 - 관계형 모델 우클릭 - 새 관계형 모델
+-Relational_1 우클릭 - 표시 - 상단 마우스포인터 오른쪽 새 테이블 - 드래그해서 테이블 생성
+-테이블 우클릭 - 속성 - 일반 (테이블 이름 지정) - 열 (데이터 이름, 데이터 유형 지정)
+PK (필수) = NOT NULL
+
+외래 키 (참조)
+
++ (추가) - 참조된 테이블 선택 - 열 선택 (필수 체크해제시 NULL값을 허용한다)
+
+테이블의 컬럼옆 * 표시는 NULL값을 허용하지 않는다는 뜻 (필수)
+
+파일 - data modeler - 임포트, 익스포트
+
+ERD (Entity Relationship Diagram) 표기법 
+
+https://hudi.blog/entity-relation-diagram/
+https://brightjy.github.io/%EC%84%A4%EA%B3%84/2020/12/24/ERD-%EA%B8%B0%ED%98%B8-%EB%B0%8F-%ED%91%9C%EA%B8%B0%EB%B2%95.html
+https://dataonair.or.kr/home/%eb%8d%b0%ec%9d%b4%ed%84%b0-%ea%b4%91%ec%9e%a5/%eb%8d%b0%ec%9d%b4%ed%84%b0-%ec%9d%b8%ec%82%ac%ec%9d%b4%ed%8a%b8/%eb%8d%b0%ec%9d%b4%ed%84%b0-%ec%a0%84%eb%ac%b8%ea%b0%80-%ec%b9%bc%eb%9f%bc/?mod=document&uid=17
+
+	존재하고 있는 것(Entity)들의 관계(RelationShip)을 나타내는 표기법(Diagram)이다.
+
+	1. IE 표기법
+	
+	2. Barker 표기법
+
+3. 개발배경 (왜 이 주제로 개발을 시작했는가)
+	개발 목적
+	개발 환경 (운영체제, 개발도구, DBMS, 사용언어)
+
+AWS, 네이버 클라우드 업로드(작성 소스)
+
+유스케이스 다이어그램 (사용자 별) 
+https://app.diagrams.net/
+
+UI 설계 보고서 작성 (배치)
+
+플로우 차트 작성
+
+클래스 보고서 작성
+
+사용한 API 표기
+
+
+
+

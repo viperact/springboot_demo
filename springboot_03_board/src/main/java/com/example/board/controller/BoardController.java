@@ -121,10 +121,12 @@ public class BoardController {
 	public String writeProMethod(BoardDTO dto, PageDTO pv, HttpServletRequest request) throws IllegalStateException, IOException {
 		MultipartFile file = dto.getFilename();
 		if (file != null && !file.isEmpty()) { // 첨부파일이 비어있지 않으면
-			UUID random = saveCopyFile(file, request);
+//			UUID random = saveCopyFile(file, request)
+			UUID random = saveCopyFile(file);
 			dto.setUpload(random + "_" + file.getOriginalFilename()); //react, 난수값 저장
 			// c:\\download\\temp 경로에 첨부파일 저장
 			file.transferTo(new File(random + "_" + file.getOriginalFilename()));
+			
 
 		}
 
@@ -147,11 +149,12 @@ public class BoardController {
 //	@RequestMapping(value = "/update.sb", method = RequestMethod.GET)
 	@RequestMapping(value = "/board/update/{num}", method = RequestMethod.GET) // react
 //	public ModelAndView updateMethod(int num, int currentPage, ModelAndView mav) {
-	public BoardDTO updateMethod(int num) {
+	public BoardDTO updateMethod(@PathVariable("num") int num) {
 //			mav.addObject("dto", service.updateSelectProcess(num));
 //			mav.addObject("currentPage", currentPage);
 //			mav.setViewName("board/update");
 //		return mav;
+		
 		
 		return service.updateSelectProcess(num);
 	}//end updateMethod()
@@ -159,15 +162,17 @@ public class BoardController {
 //	@RequestMapping(value = "/update.sb", method = RequestMethod.POST)
 	@RequestMapping(value = "/board/update", method = RequestMethod.PUT) // react
 //	public String updateProMethod(BoardDTO dto, int currentPage, HttpServletRequest request) {
-	public void updateProMethod(@RequestBody BoardDTO dto, HttpServletRequest request) {
+	public void updateProMethod(BoardDTO dto, HttpServletRequest request) throws IllegalStateException, IOException {
 //		System.out.printf("num: %d, writer:%s\n", dto.getWriter()); // react
 		MultipartFile file = dto.getFilename();
 //		if(!file.isEmpty()) {
 		if(file != null && !file.isEmpty()) {
-			UUID random = saveCopyFile(file, request);
+			UUID random = saveCopyFile(file);
 			dto.setUpload(random + "_" + file.getOriginalFilename());
+			file.transferTo(new File(random +"_"+file.getOriginalFilename()));
 		}
-		service.updateProcess(dto, urlPath(request));
+//		service.updateProcess(dto, urlPath(request));
+		service.updateProcess(dto, filePath);
 //		return "redirect:/list.sb?currentPage=" + currentPage;
 //		return "redirect:/board/list?currentPage=" + currentPage; // react
 	}//end updateProMethod
@@ -176,7 +181,8 @@ public class BoardController {
 	@RequestMapping(value = "/board/delete/{num}", method = RequestMethod.DELETE) // react
 //	public String deleteMethod(int num, int currentPage, HttpServletRequest request) {
 	public void deleteMethod(@PathVariable("num") int num, HttpServletRequest request) {
-		service.deleteProcess(num, urlPath(request));
+//		service.deleteProcess(num, urlPath(request));
+		service.deleteProcess(num, filePath);
 		
 		int totalRecord = service.countProcess();
 		this.pdto = new PageDTO(this.currentPage, totalRecord);
@@ -187,23 +193,27 @@ public class BoardController {
 	
 	
 
-	private UUID saveCopyFile(MultipartFile file, HttpServletRequest request) {
+	// 업로드 첨부파일
+	private UUID saveCopyFile(MultipartFile file) {
+		
 		String fileName = file.getOriginalFilename();
+		
 
 		// 중복파일명을 처리하기 위해 난수 발생
 		UUID random = UUID.randomUUID();
 
-		File fe = new File(urlPath(request));
-		if (!fe.exists()) {
-			fe.mkdir();
-		}
+//		File fe = new File(urlPath(request));
+//		if (!fe.exists()) {
+//			fe.mkdir();
+//		}
 
-		File ff = new File(urlPath(request), random + "_" + fileName);
+//		File ff = new File(urlPath(request), random + "_" + fileName);
+		File ff = new File(filePath, random + "_" + fileName);
 
 		try {
 			FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(ff));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 

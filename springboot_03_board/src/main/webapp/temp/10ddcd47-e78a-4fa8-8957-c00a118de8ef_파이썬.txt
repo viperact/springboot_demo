@@ -1,0 +1,43 @@
+파이썬
+
+(파이썬 자습서)
+https://docs.python.org/ko/3/tutorial/index.html
+
+(파이썬 규칙)
+https://zerosheepmoo.github.io/pep8-in-korean/doc/introduction.html
+
+(파이썬 그래프그리기)
+https://wikidocs.net/92071
+
+머신러닝
+
+사이킷런
+https://scikit-learn.org/stable/
+
+넘파이 cheat sheet
+https://blog.finxter.com/collection-10-best-numpy-cheat-sheets-every-python-coder-must-own/
+
+사이킷런 cheat sheet
+https://www.google.com/search?q=scikit+cheat+sheet&tbm=isch&ved=2ahUKEwjSrqXAqNP7AhXRz2EKHa-sCNwQ2-cCegQIABAA&oq=scikit+ch&gs_lcp=CgNpbWcQARgAMgcIABCABBATMggIABAIEB4QEzIICAAQCBAeEBMyCAgAEAgQHhATMggIABAIEB4QEzIICAAQCBAeEBM6BAgjECc6BQgAEIAEOgQIABAeOgYIABAIEB46BwgAEIAEEBg6BggAEAcQHjoICAAQgAQQsQNQyRFYtzVgjj1oBnAAeACAAekBiAG6DpIBBjAuMTIuMZgBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=9vCFY9LbDtGfhwOv2aLgDQ&bih=943&biw=952#imgrc=Xe_vWqhoo0-4kM
+
+구글 드라이브 - Colab (구글 파이썬)
+
+shift , alt + enter : 코드를 실행하며 다음 줄 생성
+
+ctrl + a : 작성중인 코드를 실행하지않고 앞코드로
+
+ctrl + b : 작성중인 코드를 실행하지않고 다음코드로
+
+파이썬
+
+문자열을 표시할때 홀따옴표' ', 쌍따옴표" "를 구분하지않음
+
+앞글자 대문자
+
+and / or = java &&, ||
+
+elif = java if else문
+
+def = java function
+
+아나콘다 설치

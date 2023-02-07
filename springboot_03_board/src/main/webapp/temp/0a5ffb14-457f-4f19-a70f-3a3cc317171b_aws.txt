@@ -1,0 +1,311 @@
+aws 사이트 접속
+컴퓨터 종료 전 aws 사이트에서 인스턴스 중지 후 종료
+인스턴스 재시작시 퍼블릭 IPv4 주소가 바뀜
+인스턴스 재시작시 FileZilla 호스트명도 바꿔줘야함
+
+로그인
+
+상단 서비스지역 아시아 태평양 (서울)로 바꾸기
+
+(보안챌린지 설정)
+이름 - 계정 - 보안 챌린지 질문 구성 편집
+
+자동 결제 방지 설정
+계정 - 결제기본설정(좌측하단) - 프리티어 사용량 알림받기
+
+키페어 생성
+서비스 - 컴퓨팅 - EC2 - 인스턴스 시작 - Quick Start - Ubuntu - Ubuntu Server 18.04 LTS (HVM), SSD Volume Type 선택
+
+aws 폴더 만들어서 관련프로그램, 파일 따로 저장
+
+- 인스턴스 유형 - t2.micro 선택 - 키 페어(로그인) - 새 키 페어 생성 - 키 페어 이름 설정, RSA, .pem 선택 (키 다운로드, 잘 보관하기)
+- 네트워크 설정 - 보안그룹 생성 체크 - 스토리지 구성 - 기본 8, 30까지 무료제공 - 30으로 설정 - 인스턴스 시작
+
+보안그룹 생성 설정
+
+EC2 - 보안그룹 - default 말고 다른 보안그룹 접속 - 인바운드 규칙 편집 - 규칙추가 5개
+- 포트 범위 3000, 3001, 8080, 8090, 21, CIDR 블록 0.0.0.0/0 설정, 유형 : Oracle-RDS - 소스 : Anywhere IPv4 설정 
+
+PPM TO PPK 변환
+putty (ubuntu 접근)
+https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
+
+64-bit x86: putty-64bit-0.78-installer.msi
+64-bit x86: puttygen.exe
+두개 다운로드
+puttygen.exe 실행 - Load - 다운받은 mypem 넣기 - save private key (같은폴더로 설정후 저장)
+64-bit x86: putty-64bit-0.78-installer.msi 실행 - 다운로드
+PuTTY 실행
+Connection - SSH - Auth - Credentials - Browse... - PPM에서 바꾼 PPK 파일 선택
+
+Session host name 변경
+(aws 인스턴스id) - 퍼블릭 IPv4 주소 복사 (3.36.98.231)
+PuTTY 프로그램 - Session - Host Name에 복사한 주소 붙여넣기 - saved Sessions 이름 설정 (myweb) 
+- Save - Open - Security Alert 뜨면 Accept
+
+PuTTY 프롬프트 창 
+login as : ubuntu 입력후 엔터 (우분투 설치)
+
+ubuntu@ip-172-31-5-55:~$ sudo passwd root 입력
+a1234 입력 (패스워드 입력)
+a1234 입력 (패스워드 확인)
+sudo vi /etc/ssh/sshd_config 입력
+esc 누른 후 :set nu 입력 (번호보이게)
+
+esc 누른 후 i 입력 (insert로 변경) - 수정
+아래로 내려서
+32번째 행 # 지우고 PermitRootLogin prohibit-password => PermitRootLogin yes 수정
+56번째 행 PasswordAuthentication no => PasswordAuthentication yes 수정
+esc 누른후 insert 빠져나온후 :wq (수정후 저장하고 빠져나옴)
+ubuntu@ip-172-31-5-55:~$ sudo service sshd restart 입력
+ubuntu@ip-172-31-5-55:~$ sudo java --version (자바설치체크) - command not found 출력이 정상
+
+ubuntu@ip-172-31-5-55:~$ sudo add-apt-repository ppa:openjdk-r/ppa 입력 (jdk다운로드)
+
+More info : ~~
+Press [Enter] to continue ~~ 출력시 엔터키 입
+
+ubuntu@ip-172-31-5-55:~$ sudo apt-get update 입력 - 업데이트 완료
+
+ubuntu@ip-172-31-5-55:~$ sudo apt-get install openjdk-11-jdk 입력
+
+Do you want to continue? [Y/n] Y 입력 (설치완료)
+
+ubuntu@ip-172-31-5-55:~$ sudo java --version 재입력 (설치확인)
+
+환경설정
+
+ubuntu@ip-172-31-5-55:~$ which java 입력 (위치확인)
+/usr/bin/java
+ubuntu@ip-172-31-5-55:~$ readlink -f /usr/bin/java 입력
+ubuntu@ip-172-31-5-55:~$ sudo vi /etc/profile 입력
+esc - i (insert) 
+맨아래 fi단에서 엔터두번
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export PATH=$PATH:$JAVA_HOME/bin
+export CLASSPATH=$JAVA_HOME/jre/lib:$JAVA_HOME/lib/tools.jar
+복사 붙여넣기
+esc - :wq (저장하고 빠져나오기)
+
+ubuntu@ip-172-31-5-55:~$ source /etc/profile 입력
+ubuntu@ip-172-31-5-55:~$ echo $JAVA_HOME
+/usr/lib/jvm/java-11-openjdk-amd64 출력
+
+oracle 설치
+https://www.oracle.com/database/technologies/xe-prior-release-downloads.html
+
+Oracle Database 11gR2 Express Edition for Linux x64 다운로드
+
+Filezilla 설치
+https://filezilla-project.org/download.php?type=client
+Download FileZilla Client 클릭
+Download클릭 - 설치
+alluser로 설치
+
+(root 권한으로 변경)
+PuTTY
+ubuntu@ip-172-31-5-55:~$ su root
+Password: a1234 
+
+FileZilla 실행
+호스트 - aws의 퍼블릭 IPv4 주소
+사용자명 - root
+비밀번호 - a1234
+포트(P) - 22
+
+(aws 인스턴스 재실행시 퍼블릭 IPv4 주소가 바뀔 수 있음)
+
+리모트 사이트 - home - ubuntu 우클릭 - 디렉터리 만들기 - download 이름으로 생성
+
+download 우클릭 - 파일속성 - 숫자값 777(권한설정) 소유자 권한, 그룹 권한, 공개 권한 읽기 쓰기 실행 모두 권한을줌
+
+리모트 사이트의 download클릭 (경로지정) - 로컬 사이트 - Disk1(다운받은 oracle파일) 우클릭 - 업로드
+(리모트 사이트의 download폴더에 Disk1 을 다운로드)
+
+PuTTY 실행
+바뀐 퍼블릭 IPv4 주소 Session host name에 입력 - 기존폴더에 save - open
+
+PuTTY 프롬프트창 
+
+root 입력 - a1234 입력
+root@ip-172-31-5-55:~# ls 입력
+(oracle-xe-11.2.0-1.0.x86_64.rpm response upgrade) 확인
+
+**oracle-xe_11.2.0-1.0.x86_64.rpm response upgrade 출력안될시
+**cd /home/ubuntu/download/Disk1 (파일질라 다운로드경로) 입력 후 ls 입력
+
+rpm을 deb로 변환
+root@ip-172-31-5-55:~# apt-get -y install alien libaio1 unixodbc 입력
+
+root@ip-172-31-5-55:~# alien --script -d oracle*.rpm 입력 (10분정도 소요됨)
+oracle-xe_11.2.0-2_amd64.deb generated 출력 확인 (변환완료)
+
+root@ip-172-31-5-55:/home/ubuntu/download/Disk1# ls 입력 (확장자가 rpm에서 deb로 변환되었는지 확인)
+oracle-xe_11.2.0-1.0.x86_64.rpm    response
+oracle-xe_11.2.0-2.amd64.deb      upgrade
+출력확인
+
+oracle 설치
+root@ip-172-31-5-55:/home/ubuntu/download/Disk1# dpkg --install oracle*.deb 입력
+
+root@ip-172-31-5-55:/home/ubuntu/download/Disk1# sudo /etc/init.d/oracle-xe/configure 입력
+Specify the HTTP port that will be used for Oracle Application Express [8080] : 8080 입력
+Specify a port that will be used for the database listener [1521] : 1521 입력
+initial configuration : a1234 (비밀번호) 입력
+Confirm the password : a1234 입력
+Do you want Oracle Database 11g Express Edition to be started on boot (y/n) [y] : y 입력
+
+apt install net-tools 입력
+netstat -nlpt 입력
+
+systemctl start oracle-xe
+systemctl status oracle-xe 입력
+Active : active (exited) 출력 확인
+ctrl c 로 빠져나가기
+
+root@ip-172-31-5-55:/home/ubuntu/download/Disk1# cat /u01/app/oarcle/product/11.2.0/xe/bin/oracle_env.sh 입력
+
+vim /etc/bash.bashrc 입력
+
+환경설정창 - 아래까지 내린후 fi 아랫단에
+(오라클 환경변수 추가)
+. /u01/app/oarcle/product/11.2.0/xe/bin/oracle_env.sh 입력 - esc - :wq 입력으로 빠져나오기
+
+systemctl stop oracle-xe 입력(조금대기)
+systemctl start oracle-xe 입력
+systemctl status oracle-xe 입력
+Active : active (exited) 출력확인
+ctrl c 로 빠져나오기
+
+root@ip-172-31-5-55:/home/ubuntu/download/Disk1# su root (root 계정으로 접속)
+root@ip-172-31-5-55:/home/ubuntu/download/Disk1# sqlplus 입력
+
+Enter user-name : system 입력
+Enter password : a1234 입력
+
+SQL > alter user hr account unlock; 입력 (sql 계정으로 접근)
+
+SQL > alter user hr identified by a1234; 입력 (sql 계정 비밀번호)
+
+SQL > conn hr/a1234 (계정 로그인)
+
+SQL > select * from employees where first_name = 'Ellen'; 입력 (계정 접속했는지 테이블 확인)
+
+aws 보안그룹 - default가 아닌 보안 그룹 클릭 - 인바운드 규칙 편집
+- 유형 : Oracle-RDS - 소스 : Anywhere IPv4 설정
+
+sql developer -> 파일 - 새파일 - Name : myweb - 사용자이름 hr, 비밀번호 a1234
+- 세부정보 - 호스트이름 - aws 인스턴스 - 퍼블릭 IPv4주소 - 테스트 - 성공 뜨면 접속
+- select * from employees; 연동되었는지 확인
+
+Apach Tomcat 설치
+
+https://tomcat.apache.org/
+
+https://tomcat.apache.org/download-90.cgi
+
+Binary Distributions - Core - tar.gz 우클릭 - 링크 주소 복사
+
+PuTTY - root 으로 로그인 - a1234 (ubuntu로 로그인 후 su root으로 root 접근 가능)
+
+cd home/ubuntu/download (download 폴더에 접속)
+ls 입력 (Disk1 확인)
+
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.70/bin/apache-tomcat-9.0.70.tar.gz 입력 (아파치 톰캣 다운로드)
+
+ls 입력 (다운받은 톰캣 확인)
+
+tar -xvf apache-tomcat-9.0.70.tar.gz 입력 (톰캣 압축해제)
+
+ls 입력 (압축해제 파일 있는지 확인) - Disk1 apache-tomcat-9.0.70 apache-tomcat-9.0.70.tar.gz
+
+mv apahce-tomcat-9.0.70 ../tomcat9 입력 (폴더이동)
+cd.. 입력
+ls 입력 (download 폴더에 tomcat9 있는지 확인)
+
+cd tomcat9 입력 (tomcat9 폴더이동)
+ls 입력 (파일확인)
+
+cd conf 입력 (conf 폴더로 입력)
+
+ls 입력
+
+vi server.xml 입력
+:set nu 입력 (번호)
+69번째 라인 이동
+i 입력 (insert)
+
+<Connector port="8090" protocol="HTTP/1.1"
+	   connectionTimeout="20000"
+	   redirectPort="8443" URIEncoding="UTF-8"/> 
+
+수정 포트번호변경, URIENCODING 추가
+esc - :wq 입력
+
+cd ..로 ubuntu 폴더까지 이동
+
+ls 입력
+
+vi /etc/profile 입력
+
+맨아래까지 내린 후 i 입력 (insert)
+export CATALINA_HOME=/home/ubuntu/tomcat9 추가입력 
+esc - :wq 입력
+
+source /etc/profile (환경 변경사항 바로 적용)
+echo $CATALINA_HOME (환경 변경사항 확인)
+
+Apache-Tomcat 실행 시작
+tomcat9/bin/startup.sh 입력
+Tomcat started. (Tomcat 실행 확인)
+
+브라우저 주소창에
+aws 인스턴스 퍼블릭 IPv4주소:8090 입력
+
+인터넷창 출력 확인
+
+톰캣 종료
+tomcat9/bin/shutdown.sh
+
+Spring으로 maven project 배포하기 (war)
+
+spring_08_board 프로젝트
+pom.xml 에서 war 확인
+
+dispatch-board.xml 에서 IPv4로 변경 (aws 인스턴스)
+<property name="url"
+		value="jdbc:oracle:thin:@52.78.235.23:1521:xe" />
+<property name="username" value="hr" /> 
+
+프로젝트 우클릭 - run as - 4 maven build
+Goals - package
+Profiles - 비워둠
+Run
+
+콘솔창 
+BUILD SUCCESS 확인
+Building war : c:/big_study~~ 경로 확인
+
+FileZilla
+빠른연결후
+
+로컬 사이트(내 컴퓨터)
+big_study \ spring_workspace \ spring_08_board \ target \
+
+리모트 사이트
+home/ubuntu/tomcat9/webapps (경로설정)
+
+로컬사이트
+myapp-1.0.0-BUILD-SNAPSHOT.war 우클릭 - 업로드)
+
+PuTTY
+tomcat9/bin/startup.sh (톰캣서버 실행)
+
+systemctl start oracle-xe (오라클 실행)
+
+systemctl status oracle-xe (오라클 상태 확인)
+
+netstat -nltp 입력 (1521 확인)
+
+http://52.78.235.23(인스턴스 퍼블릭 IPv4 주소):8090/myapp-1.0.0-BUILD-SNAPSHOT/list.sb
