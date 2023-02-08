@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.login.repository.UserRepository;
 import com.example.security.jwt.JwtAuthenticationFilter;
+import com.example.security.jwt.JwtAuthorizationFilter;
 import com.example.security.service.CorsConfig;
 
 

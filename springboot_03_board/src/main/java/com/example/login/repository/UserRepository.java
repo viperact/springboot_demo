@@ -12,6 +12,6 @@ public interface UserRepository {
 	void saveUser(User user);
 	
 	//로그인
-	User getUserAccout(String username);
+	User getUserAccount(String username);
 
 }
