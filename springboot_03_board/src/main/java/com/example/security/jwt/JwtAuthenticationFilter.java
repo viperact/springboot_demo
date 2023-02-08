@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 //POST    http://localhost:8090/login
 
+// 인증처리
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
    private AuthenticationManager authManager;
 
@@ -46,18 +47,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //         }
 
          ObjectMapper om = new ObjectMapper();
-         User user = om.readValue(request.getInputStream(), User.class);
+         User user = om.readValue(request.getInputStream(), User.class); // 로그인을하면 username, password 값을 User.class객체에 담아 user에 보내줌
          System.out.printf("username:%s password:%s\n", user.getUsername(), user.getPassword());
 
-         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-               user.getUsername(), user.getPassword());
+         UsernamePasswordAuthenticationToken authenticationToken =
+        		 new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 
-         Authentication authentication = authManager.authenticate(authenticationToken);
+         Authentication authentication = authManager.authenticate(authenticationToken); // 인증이 처리되는 단계
 
          PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
          System.out.printf("로그인 완료 됨(인증)  %s %s ", principalDetails.getUsername(), principalDetails.getPassword());
 
-         return authentication;
+         return authentication; // 객체값을 리턴 (정상적으로 처리가됐으면)
 
       } catch (IOException e) {
          e.printStackTrace();
@@ -66,6 +67,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       return null;
    }
 
+   // 호출되어 정상적으로 처리
    @Override
    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
          Authentication authResult) throws IOException, ServletException {
@@ -74,16 +76,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
       // RSA방식은 아니고 Hash방식
-      String jwtToken = JWT.create().withSubject("mycos")
-            .withExpiresAt(new Date(System.currentTimeMillis() + (60 * 1000 * 3 * 1L))) // 3분
+      String jwtToken = JWT.create()
+    		.withSubject("mycos")
+            .withExpiresAt(new Date(System.currentTimeMillis() + (60 * 1000 * 3 * 1L))) // 3분 (만료시간)
             .withClaim("username", principalDetails.getUser().getUsername())
-            .withClaim("authRole", principalDetails.getUser().getAuthRole())
-            .sign(Algorithm.HMAC512("mySecurityCos"));
+            .withClaim("authRole", principalDetails.getUser().getAuthRole()) // 권한
+            .sign(Algorithm.HMAC512("mySecurityCos")); // 토큰생성 (알고리즘사용)
       System.out.println("jwtToken:" + jwtToken);
       response.addHeader("Authorization", "Bearer " + jwtToken);
+      
 
+      
       final Map<String, Object> body = new HashMap<String, Object>();
-      body.put("username", principalDetails.getUser().getUsername());
+      body.put("username", principalDetails.getUser().getUsername()); // username은 body에 담아 보내줌, body는 Map에 담는다
 
       ObjectMapper mapper = new ObjectMapper();
       mapper.writeValue(response.getOutputStream(), body);

@@ -36,7 +36,7 @@ public class CorsConfig {
 		//모든 post, get, put, delete등 모든 메소드에 응답을 허용한다
 		config.addAllowedMethod("*");
 		
-	
+		
 		
 		// 프론트엔드에 노출하도록 허용
 		config.addExposedHeader("Authorization");
